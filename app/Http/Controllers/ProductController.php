@@ -4,18 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
 {
-    use AuthorizesRequests;
-
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $this->authorize('viewAny', Product::class);
+        Gate::authorize('viewAny', Product::class);
 
         $products = Product::with('user')->get();
 
@@ -27,7 +25,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Product::class);
+        Gate::authorize('create', Product::class);
 
         return view('products.create');
     }
@@ -37,7 +35,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Product::class);
+        Gate::authorize('create', Product::class);
 
         $validated = $request->validate([
             'name'  => ['required', 'string', 'max:255'],
@@ -61,7 +59,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $this->authorize('view', $product);
+        Gate::authorize('view', $product);
 
         return view('products.show', compact('product'));
     }
@@ -71,7 +69,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $this->authorize('update', $product);
+        Gate::authorize('update', $product);
 
         return view('products.edit', compact('product'));
     }
@@ -81,7 +79,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $this->authorize('update', $product);
+        Gate::authorize('update', $product);
 
         $validated = $request->validate([
             'name'  => ['required', 'string', 'max:255'],
@@ -104,7 +102,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $this->authorize('delete', $product);
+        Gate::authorize('delete', $product);
 
         $product->delete();
 
