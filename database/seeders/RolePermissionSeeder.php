@@ -6,25 +6,31 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Hash;
 
 class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // Créer rôle
+        // Rôle admin
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
 
-        // Créer permission
+        // Permission
         $permission = Permission::firstOrCreate(['name' => 'view dashboard']);
 
         // Associer permission au rôle
         $adminRole->givePermissionTo($permission);
 
-        // Récup user
-        $user = User::where('email', 'test@example.com')->first();
+        // Créer un admin
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('password'),
+            ]
+        );
 
-        if ($user) {
-            $user->assignRole($adminRole);
-        }
+        // Assigner le rôle admin
+        $admin->assignRole($adminRole);
     }
 }
